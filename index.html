@@ -4,548 +4,489 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026年枣庄市初中学业水平考试成绩查询系统</title>
-    <!-- 引入 Tailwind CSS 构建现代、精美的政务 UI 界面 -->
+    <!-- 引入 Tailwind CSS 用于快速构建精美响应式 UI -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入 FontAwesome 字体图标用于政务微标与装饰 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+        /* 额外微调样式以高度还原政务网质感 */
         body {
-            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background: linear-gradient(180deg, #eef5fc 0%, #f4f8fa 100%);
+            min-height: 100vh;
         }
-        /* 拟真水印 */
-        .watermark {
-            background-image: radial-gradient(rgba(0, 102, 204, 0.03) 1px, transparent 0);
-            background-size: 24px 24px;
+        .gov-header-bg {
+            background: linear-gradient(90deg, #1e5799 0%, #2989d8 50%, #207cca 100%);
+        }
+        /* 斑马纹表格样式 */
+        .result-table th {
+            background-color: #f5f9fc;
+            color: #334155;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+        }
+        .result-table td {
+            border: 1px solid #e2e8f0;
+            text-align: center;
         }
     </style>
 </head>
-<body class="watermark min-h-screen flex flex-col justify-between text-gray-800">
+<body class="flex flex-col justify-between">
 
-    <!-- 顶端政务红蓝装饰条 -->
-    <div class="h-1.5 w-full bg-gradient-to-r from-blue-700 via-blue-500 to-emerald-500"></div>
-
-    <!-- 顶部导航 & 官方Logo栏 -->
-    <header class="bg-white border-b border-gray-200 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <!-- 仿官方Logo组合 -->
-            <div class="flex items-center gap-3">
-                <!-- 拟真绿色山水Logo SVG -->
-                <div class="w-12 h-12 flex-shrink-0 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-xl flex items-center justify-center text-white shadow-md shadow-emerald-100">
-                    <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2L2 22h20L12 2z"/>
-                        <path d="M12 10l-4 8h8l-4-8z"/>
-                        <path d="M12 2v20"/>
-                    </svg>
+    <!-- 顶部政务风格导航栏/标语 -->
+    <header class="gov-header-bg text-white shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <!-- 枣庄教育局Logo占位 -->
+                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center border border-white/40">
+                    <span class="text-xs font-bold tracking-tighter text-center leading-none">枣庄<br>教育</span>
                 </div>
                 <div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="text-xs font-bold text-white bg-red-600 px-1.5 py-0.5 rounded tracking-wider">山东省</span>
-                        <span class="text-xs font-medium text-gray-500">枣庄市教育招生考试网</span>
-                    </div>
-                    <h1 class="text-lg sm:text-xl font-bold text-slate-800 tracking-tight">枣庄市教育和体育局统一政务公开平台</h1>
+                    <h1 class="text-xl md:text-2xl font-bold tracking-wide">枣庄市教育局门户网站</h1>
+                    <p class="text-xs text-blue-100">Zaozhuang Education Bureau Portal</p>
                 </div>
             </div>
-            <!-- 右侧快捷系统指示 -->
-            <div class="hidden md:flex items-center gap-4 text-xs text-gray-500">
-                <span class="flex items-center gap-1"><i class="fa-solid fa-lock text-emerald-500"></i> 安全传输已加密</span>
-                <span class="text-gray-300">|</span>
-                <span id="live-time" class="font-mono">2026-07-02 17:14:00</span>
+            <div class="mt-2 md:mt-0 text-xs text-blue-100 bg-black/10 px-3 py-1.5 rounded-md border border-white/10">
+                当前系统：2026年枣庄市初中学业水平考试（中考）成绩在线查询通道
             </div>
         </div>
     </header>
 
-    <!-- 中部主内容区域 -->
-    <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full">
+    <!-- 主体内容区 -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-8">
         
-        <!-- 核心标题横幅 -->
-        <div class="text-center mb-8">
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-blue-900 tracking-wide mb-2 drop-shadow-sm">
-                2026年枣庄市初中毕业生学业水平考试
-            </h2>
-            <div class="inline-block bg-blue-100 text-blue-800 text-sm font-semibold px-4 py-1.5 rounded-full shadow-inner border border-blue-200">
-                <i class="fa-solid fa-graduation-cap mr-1"></i> 成绩在线查询通道 (内测)
+        <!-- 公告通知栏 -->
+        <div class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded-r-md mb-6 shadow-sm">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-blue-800 font-medium">
+                        重要提示：请仔细核对准考证号、考生姓名以及身份证号后六位，若有疑问请咨询当地教育招考部门。
+                    </p>
+                </div>
             </div>
         </div>
 
-        <!-- 1. 查询表单卡片 (未查询状态展示) -->
-        <div id="query-card" class="bg-white rounded-2xl shadow-xl border border-blue-100 p-6 sm:p-10 transition-all duration-300 hover:shadow-2xl">
-            <div class="border-b border-gray-100 pb-4 mb-6">
-                <h3 class="text-lg font-bold text-gray-700 flex items-center gap-2">
-                    <i class="fa-solid fa-id-card text-blue-600"></i> 考生身份校验
-                </h3>
-                <p class="text-xs text-gray-400 mt-1">请核对您的准考证信息，仔细填写。若信息有误将无法读取系统档案。</p>
+        <!-- 查询表单卡片 -->
+        <div id="search-card" class="bg-white rounded-xl shadow-lg border border-slate-100 p-6 md:p-8 transition-all duration-300">
+            <div class="border-b border-slate-100 pb-4 mb-6">
+                <h2 class="text-lg font-bold text-slate-800 flex items-center">
+                    <span class="w-2.5 h-5 bg-blue-600 rounded mr-2 inline-block"></span>
+                    中考成绩查询入口
+                </h2>
             </div>
 
-            <form id="query-form" onsubmit="handleQuery(event)" class="space-y-5">
-                <!-- 输入框 1：姓名 -->
+            <form id="search-form" onsubmit="handleSearch(event)" class="space-y-5">
                 <div>
-                    <label for="student-name" class="block text-sm font-semibold text-gray-600 mb-1.5">
-                        考生姓名 <span class="text-red-500">*</span>
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                            <i class="fa-solid fa-user text-gray-400 text-sm"></i>
-                        </div>
-                        <input 
-                            type="text" 
-                            id="student-name" 
-                            required 
-                            placeholder="请输入考生真实姓名" 
-                            class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-sm transition placeholder-gray-400"
-                        >
-                    </div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">准考证号 (11位) <span class="text-red-500">*</span></label>
+                    <input type="text" id="exam-no" maxlength="11" placeholder="请输入11位准考证号" 
+                           class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
+                           required>
                 </div>
 
-                <!-- 输入框 2：准考证号 -->
                 <div>
-                    <label for="student-id" class="block text-sm font-semibold text-gray-600 mb-1.5">
-                        准考证号 <span class="text-red-500">*</span>
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                            <i class="fa-solid fa-barcode text-gray-400 text-sm"></i>
-                        </div>
-                        <input 
-                            type="text" 
-                            id="student-id" 
-                            required 
-                            pattern="\d{11}"
-                            maxlength="11"
-                            placeholder="11位枣庄中考准考证号 (例: 24810110976)" 
-                            class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-sm font-mono tracking-wider transition placeholder-gray-400"
-                        >
-                    </div>
-                    <p class="text-xs text-gray-400 mt-1">注意：中考准考证号通常为11位纯数字。</p>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">考生姓名 <span class="text-red-500">*</span></label>
+                    <input type="text" id="student-name" placeholder="请输入考生姓名" 
+                           class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
+                           required>
                 </div>
 
-                <!-- 输入框 3：身份证号后六位 -->
                 <div>
-                    <label for="id-card" class="block text-sm font-semibold text-gray-600 mb-1.5">
-                        身份证号后六位 <span class="text-red-500">*</span>
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                            <i class="fa-solid fa-shield-halved text-gray-400 text-sm"></i>
-                        </div>
-                        <input 
-                            type="text" 
-                            id="id-card" 
-                            required 
-                            maxlength="6"
-                            placeholder="身份证后六位，末位若为X请输入大写" 
-                            class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-sm font-mono tracking-wider transition placeholder-gray-400"
-                        >
-                    </div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">身份证号后六位 <span class="text-red-500">*</span></label>
+                    <input type="text" id="id-card" maxlength="6" placeholder="请输入身份证号后六位" 
+                           class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all"
+                           required>
                 </div>
 
-                <!-- 声明服务条款 -->
-                <div class="flex items-start gap-2 pt-2">
-                    <input type="checkbox" id="terms" checked required class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                    <label for="terms" class="text-xs text-gray-500 leading-relaxed">
-                        本人保证所填信息真实有效，并授权枣庄市学业水平考试系统查询本人2026中考科目成绩、综合素质评价信息。
-                    </label>
-                </div>
-
-                <!-- 动作按钮 -->
-                <div class="flex flex-col sm:flex-row gap-3 pt-4">
-                    <button 
-                        type="button" 
-                        onclick="resetForm()" 
-                        class="w-full sm:w-1/3 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 font-medium text-gray-600 transition text-sm flex items-center justify-center gap-2"
-                    >
-                        <i class="fa-solid fa-rotate-left"></i> 重置输入
+                <!-- 按钮组 -->
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
+                    <button type="submit" 
+                            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors shadow-md shadow-blue-200 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        查询成绩
                     </button>
-                    <button 
-                        type="submit" 
-                        class="w-full sm:w-2/3 py-3 bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition text-sm flex items-center justify-center gap-2"
-                    >
-                        <i class="fa-solid fa-magnifying-glass"></i> 立即验证并查询成绩
+                    <button type="button" onclick="resetForm()" 
+                            class="sm:w-32 bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-3 px-4 rounded-lg transition-colors border border-slate-200">
+                        重置信息
                     </button>
                 </div>
             </form>
         </div>
 
-        <!-- 2. 加载动画遮罩 (查询中) -->
-        <div id="loading-card" class="hidden bg-white rounded-2xl shadow-xl border border-blue-100 p-12 text-center transition-all duration-300">
-            <div class="inline-block relative w-20 h-20 mb-6">
-                <!-- 拟真教育局查询圈圈 -->
-                <div class="absolute inset-0 rounded-full border-4 border-blue-100"></div>
-                <div class="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
-            </div>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">正在安全对接省教育服务网关...</h3>
-            <p class="text-sm text-gray-500 max-w-xs mx-auto">正在校验考生身份、读取2026年枣庄市学业水平考试库、解密分数信息...</p>
+        <!-- 加载动画（2s 假装对接系统） -->
+        <div id="loading" class="hidden flex-col items-center justify-center py-20 bg-white rounded-xl shadow-lg border border-slate-100">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
+            <p class="text-slate-600 text-sm font-medium animate-pulse">正在安全连接枣庄市中考成绩数据库，请稍候...</p>
         </div>
 
-        <!-- 3. 仿真成绩单卡片 (完美还原截图) -->
-        <div id="result-card" class="hidden transition-all duration-500">
-            <!-- 卡片上方装饰横幅 -->
-            <div class="bg-gradient-to-r from-sky-50 to-blue-50 border border-b-0 border-blue-100 rounded-t-2xl p-4 sm:p-6">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2 text-emerald-600 font-bold text-sm bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
-                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-                        查询成功
-                    </div>
-                    <button onclick="backToQuery()" class="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 transition">
-                        <i class="fa-solid fa-arrow-left"></i> 重新查询
-                    </button>
+        <!-- 成绩展示结果卡片 (仿照提供的图片深度复刻) -->
+        <div id="result-card" class="hidden bg-[#edf4fa] rounded-xl shadow-xl border-4 border-white p-4 md:p-8 relative transition-all duration-300">
+            <!-- 顶端彩色横条饰条 -->
+            <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600 rounded-t-lg"></div>
+
+            <!-- 顶端学校标语/Logo装饰 -->
+            <div class="flex items-center justify-between mb-4 border-b border-blue-200 pb-3">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm">枣</div>
+                    <span class="text-emerald-700 font-bold text-lg tracking-wider">枣庄市成绩发布与综合服务平台</span>
                 </div>
+                <button onclick="closeResult()" class="text-slate-400 hover:text-red-500 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
             </div>
 
-            <!-- 主喜报卡片 -->
-            <div class="bg-sky-50 border border-blue-100 rounded-b-2xl shadow-xl p-4 sm:p-8 space-y-6 relative overflow-hidden">
-                
-                <!-- 仿制背景印章 (枣庄中考合格标志) -->
-                <div class="absolute right-6 top-6 opacity-[0.04] pointer-events-none">
-                    <i class="fa-solid fa-stamp text-9xl text-blue-900"></i>
-                </div>
-
-                <!-- 1. 同学你好！喜报横幅 -->
-                <div>
-                    <h2 class="text-xl sm:text-2xl font-extrabold text-blue-900 flex items-center gap-2">
-                        <span id="res-student-name" class="underline underline-offset-4 decoration-blue-500 decoration-3"></span> 同学您好！
-                    </h2>
-                    <p class="text-base sm:text-lg text-gray-700 mt-4 leading-relaxed font-medium">
-                        在2026年初中学业水平考试中，您获得了 <span id="res-total-score" class="text-3xl sm:text-4xl font-extrabold text-red-600 px-1 drop-shadow-sm font-serif"></span> 分！
-                    </p>
-                    <p class="text-xs sm:text-sm text-gray-500 mt-2 font-normal italic">
-                        亲爱的考生，中考只是人生路上的一小步，无论成败，请稍作休息，继续前行！
-                    </p>
-                </div>
-
-                <!-- 2. 考生基础信息条 -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-blue-100 text-xs sm:text-sm text-gray-600">
-                    <div>
-                        <span class="text-gray-400">姓名：</span>
-                        <span id="res-info-name" class="font-bold text-gray-800"></span>
-                    </div>
-                    <div>
-                        <span class="text-gray-400">准考证号：</span>
-                        <span id="res-info-id" class="font-mono font-bold text-gray-800"></span>
-                    </div>
-                    <div>
-                        <span class="text-gray-400">身份证后六位：</span>
-                        <span id="res-info-idcard" class="font-mono font-bold text-gray-800"></span>
-                    </div>
-                    <div>
-                        <span class="text-gray-400">总分：</span>
-                        <span id="res-info-total" class="font-bold text-red-600"></span> 分
-                    </div>
-                </div>
-
-                <!-- 3. 各科目成绩详情表格 (自适应横向滚动) -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-center border-collapse text-xs sm:text-sm">
-                            <thead>
-                                <tr class="bg-slate-50 border-b border-gray-200 text-gray-600 font-semibold">
-                                    <th class="py-3 px-3 border-r border-gray-200 min-w-[50px]">科目</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[50px]">语文</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[50px]">数学</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[50px]">英语</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[50px]">物理</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[50px]">化学</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[50px]">道法</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[50px]">历史</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[55px]">地理生物</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[50px]">地理</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[50px]">生物</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[50px]">体育</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[60px]">特殊考生</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[80px]">综合素质评价</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[70px]">信息技术</th>
-                                    <th class="py-3 px-2 border-r border-gray-200 min-w-[70px]">实验操作</th>
-                                    <th class="py-3 px-2 min-w-[70px]">违纪作弊</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- 分数行 -->
-                                <tr class="border-b border-gray-100 text-gray-800 font-bold">
-                                    <td class="py-4 px-3 bg-slate-50/50 border-r border-gray-200 text-gray-500 font-medium">成绩</td>
-                                    <td id="score-yw" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td id="score-sx" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td id="score-yy" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td id="score-wl" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td id="score-hx" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td id="score-df" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td id="score-ls" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td id="score-ds" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td class="py-4 px-2 border-r border-gray-200 text-gray-400 font-normal">-</td>
-                                    <td class="py-4 px-2 border-r border-gray-200 text-gray-400 font-normal">-</td>
-                                    <td id="score-ty" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td class="py-4 px-2 border-r border-gray-200 text-red-500 font-normal">0</td>
-                                    <td class="py-4 px-2 border-r border-gray-200 text-gray-400 font-normal">-</td>
-                                    <td class="py-4 px-2 border-r border-gray-200 text-gray-400 font-normal">-</td>
-                                    <td class="py-4 px-2 border-r border-gray-200 text-gray-400 font-normal">-</td>
-                                    <td class="py-4 px-2 text-emerald-600 font-normal">无</td>
-                                </tr>
-                                <!-- 等级行 -->
-                                <tr class="text-blue-900 font-semibold">
-                                    <td class="py-4 px-3 bg-slate-50/50 border-r border-gray-200 text-gray-500 font-medium">等级</td>
-                                    <td id="grade-yw" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td id="grade-sx" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td id="grade-yy" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td id="grade-wl" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td id="grade-hx" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td id="grade-df" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td id="grade-ls" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td id="grade-ds" class="py-4 px-2 border-r border-gray-200">-</td>
-                                    <td class="py-4 px-2 border-r border-gray-200 text-gray-400 font-normal">-</td>
-                                    <td class="py-4 px-2 border-r border-gray-200 text-gray-400 font-normal">-</td>
-                                    <td class="py-4 px-2 border-r border-gray-200 text-gray-400 font-normal">-</td>
-                                    <td class="py-4 px-2 border-r border-gray-200 text-gray-400 font-normal">-</td>
-                                    <td class="py-4 px-2 border-r border-gray-200 text-emerald-600 font-bold">A</td>
-                                    <td class="py-4 px-2 border-r border-gray-200 text-emerald-600 font-bold">A</td>
-                                    <td class="py-4 px-2 border-r border-gray-200 text-emerald-600 font-bold">A</td>
-                                    <td class="py-4 px-2 text-gray-400 font-normal">-</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 4. 录取预估及参考建议 -->
-                <div class="bg-emerald-50/70 border border-emerald-100 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="inline-block bg-emerald-600 text-white text-xs px-2 py-0.5 rounded font-bold">志愿投档</span>
-                            <span class="text-xs text-gray-500 font-semibold">首批预录参考学校：</span>
-                        </div>
-                        <p class="text-lg font-extrabold text-emerald-800" id="res-school">
-                            --
-                        </p>
-                    </div>
-                    <div class="text-left sm:text-right">
-                        <p class="text-xs text-gray-400">成绩生成时间</p>
-                        <p id="res-timestamp" class="text-xs font-mono font-semibold text-gray-600">2026-07-02 17:14:00</p>
-                    </div>
-                </div>
-
-                <!-- 5. 仿真说明公告 -->
-                <div class="bg-gray-100/80 rounded-xl p-4 text-xs text-gray-500 space-y-1.5 leading-relaxed">
-                    <p class="font-semibold text-gray-700">温馨提示说明：</p>
-                    <p>1. 预录取参考学校系系统依据往年各校录取投档控制线做出的模拟测算，仅供考生与家长志愿填报参考，最终录取结果请以枣庄市教育局发布的官方投档录取喜报为准。</p>
-                    <p>2. 请于 7 月 6 日 16:00 后查询并关注学校微信公众号。在 7 月 12 日 17:00 前登录注册交费，逾期将自动作废。</p>
-                </div>
-
-                <!-- 重新查询按钮 -->
-                <div class="pt-2 flex justify-center">
-                    <button 
-                        onclick="backToQuery()" 
-                        class="px-8 py-3 bg-white hover:bg-gray-50 text-blue-700 font-bold rounded-xl shadow-md hover:shadow-lg border border-blue-200 transition text-sm flex items-center gap-2"
-                    >
-                        <i class="fa-solid fa-arrow-left-long"></i> 返回重新输入
-                    </button>
-                </div>
+            <!-- 主标题：恭喜抬头 -->
+            <div class="my-6">
+                <h3 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-wrap items-baseline gap-1">
+                    <span id="res-student-name" class="text-blue-700 underline underline-offset-4 decoration-2">王同学</span>
+                    <span>同学您好！</span>
+                </h3>
+                <p class="text-slate-700 text-base md:text-lg mt-3 leading-relaxed">
+                    在2026年初中学业水平考试中，您获得了 <span id="res-total-score-big" class="text-4xl md:text-5xl font-extrabold text-red-500 mx-1 drop-shadow-sm">647</span> 分！
+                </p>
+                <p class="text-xs md:text-sm text-slate-500 mt-2 italic">
+                    亲爱的考生，中考只是人生路上的一小步，无论成败，请稍作休息，继续前行！
+                </p>
             </div>
+
+            <!-- 基础考生基本资料区 -->
+            <div class="bg-white/60 rounded-lg p-3 md:p-4 mb-6 text-xs md:text-sm text-slate-600 grid grid-cols-1 md:grid-cols-4 gap-2 border border-blue-100">
+                <div><span class="font-semibold text-slate-500">姓名：</span><span id="res-name" class="text-slate-800">王同学</span></div>
+                <div><span class="font-semibold text-slate-500">准考证号：</span><span id="res-exam-no" class="text-slate-800">24810110976</span></div>
+                <div><span class="font-semibold text-slate-500">身份证后六位：</span><span id="res-id" class="text-slate-800">284235</span></div>
+                <div><span class="font-semibold text-slate-500">总分：</span><span id="res-total-score-small" class="text-red-600 font-bold">647 分</span></div>
+            </div>
+
+            <!-- 核心：多列成绩表格（完美还原图片横排多列表格形式，并在移动端支持横向滑动） -->
+            <div class="overflow-x-auto rounded-lg shadow-sm border border-slate-200 bg-white mb-6">
+                <table class="w-full text-xs md:text-sm min-w-[1000px] table-fixed result-table">
+                    <thead>
+                        <tr class="divide-x divide-slate-200">
+                            <th class="py-3 px-2 w-16">科目</th>
+                            <th class="py-3 px-2">语文</th>
+                            <th class="py-3 px-2">数学</th>
+                            <th class="py-3 px-2">英语</th>
+                            <th class="py-3 px-2">物理</th>
+                            <th class="py-3 px-2">化学</th>
+                            <th class="py-3 px-2">道法</th>
+                            <th class="py-3 px-2">历史</th>
+                            <th class="py-3 px-2">地理生物</th>
+                            <th class="py-3 px-2">地理</th>
+                            <th class="py-3 px-2">生物</th>
+                            <th class="py-3 px-2">体育</th>
+                            <th class="py-3 px-2">特殊考生</th>
+                            <th class="py-3 px-2">综合素质评价</th>
+                            <th class="py-3 px-2">信息技术</th>
+                            <th class="py-3 px-2">实验操作</th>
+                            <th class="py-3 px-2">违纪作弊</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        <!-- 第一行：成绩 -->
+                        <tr class="divide-x divide-slate-200 bg-white">
+                            <td class="py-3 px-1 font-semibold text-slate-600 bg-slate-50">成绩</td>
+                            <td id="score-yw" class="font-semibold text-slate-800">105</td>
+                            <td id="score-sx" class="font-semibold text-slate-800">119</td>
+                            <td id="score-yy" class="font-semibold text-slate-800">112</td>
+                            <td id="score-wl" class="font-semibold text-slate-800">69</td>
+                            <td id="score-hx" class="font-semibold text-slate-800">49</td>
+                            <td id="score-df" class="font-semibold text-slate-800">42</td>
+                            <td id="score-ls" class="font-semibold text-slate-800">44</td>
+                            <td id="score-dlsw" class="font-semibold text-slate-800">59</td>
+                            <td class="text-slate-400">-</td>
+                            <td class="text-slate-400">-</td>
+                            <td id="score-ty" class="font-semibold text-slate-800">48</td>
+                            <td class="font-semibold text-slate-800">0</td>
+                            <td class="text-slate-400">-</td>
+                            <td class="text-slate-400">-</td>
+                            <td class="text-slate-400">-</td>
+                            <td class="text-slate-400">-</td>
+                        </tr>
+                        <!-- 第二行：等级 -->
+                        <tr class="divide-x divide-slate-200 bg-slate-50/40">
+                            <td class="py-3 px-1 font-semibold text-slate-600 bg-slate-50">等级</td>
+                            <td id="grade-yw" class="font-semibold text-emerald-600">A</td>
+                            <td id="grade-sx" class="font-semibold text-emerald-600">A</td>
+                            <td id="grade-yy" class="font-semibold text-emerald-600">A</td>
+                            <td id="grade-wl" class="font-semibold text-emerald-600">A</td>
+                            <td id="grade-hx" class="font-semibold text-amber-600">B+</td>
+                            <td id="grade-df" class="font-semibold text-emerald-600">A</td>
+                            <td id="grade-ls" class="font-semibold text-emerald-600">A</td>
+                            <td id="grade-dlsw" class="font-semibold text-emerald-600">A</td>
+                            <td class="text-slate-400">-</td>
+                            <td class="text-slate-400">-</td>
+                            <td class="text-slate-400">-</td>
+                            <td class="text-slate-400">-</td>
+                            <td class="font-semibold text-emerald-600">A</td>
+                            <td class="font-semibold text-emerald-600">A</td>
+                            <td class="font-semibold text-emerald-600">A</td>
+                            <td class="text-slate-400">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 底部提示：滑档或者学校录取 -->
+            <div class="bg-blue-600 text-white rounded-lg p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-3 shadow-md">
+                <div class="flex items-center space-x-2">
+                    <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-sm md:text-base font-semibold tracking-wide">
+                        本分数可录取院校：<span id="admission-school" class="bg-white text-blue-800 px-2 py-0.5 rounded ml-1 font-bold">滕州一中</span>
+                    </span>
+                </div>
+                <span class="text-xs text-blue-100 italic bg-blue-700/50 px-2.5 py-1 rounded">
+                    注：志愿已于考前填报完毕，系统根据分数进行智能匹配。请以最终录取通知书为准。
+                </span>
+            </div>
+
+            <!-- 页面温馨提示 -->
+            <p class="text-xs text-slate-500 leading-relaxed border-t border-slate-200 pt-3">
+                温馨提示：请于7月6日 16:00 后查询录取学校微信公众号，在7月12日 17:00 前登录平台缴费，逾期视为自动放弃。
+            </p>
         </div>
-
     </main>
 
-    <!-- 底部政务信息与虚假备案号 -->
-    <footer class="bg-slate-800 text-slate-400 text-xs py-8 border-t border-slate-700 mt-12">
-        <div class="max-w-4xl mx-auto px-4 text-center space-y-3">
-            <p class="flex flex-wrap justify-center gap-x-4 gap-y-1 font-semibold text-slate-300">
-                <a href="#" class="hover:underline">枣庄教育局信息公开网</a>
-                <span>|</span>
-                <a href="#" class="hover:underline">枣庄政务网</a>
-                <span>|</span>
-                <a href="#" class="hover:underline">学业水平考试申诉举报中心</a>
-            </p>
-            <p>主办单位：枣庄市教育局 中等学校招生委员会办公室 | 运行维护：山东省教育招生网中心技术组</p>
-            <p class="font-mono text-slate-500">
-                版权所有 © 2026 枣庄市教育局. 保留所有权利。 鲁ICP备2026004812号-1
+    <!-- 免责恶搞弹窗组件 -->
+    <div id="prank-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all duration-300">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden transform scale-95 transition-transform duration-300">
+            <!-- 头部红黄色警告条 -->
+            <div class="bg-amber-500 h-2"></div>
+            <div class="p-6">
+                <div class="flex items-center space-x-3 text-amber-600 mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <h3 class="text-xl font-bold">高能趣味警告！</h3>
+                </div>
+                <div class="text-slate-600 space-y-3 text-sm md:text-base">
+                    <p class="font-bold text-slate-800">仅作趣味整活！</p>
+                    <p>本页面无任何对接真实教育局接口、无读取真实考生信息功能，所有分数均为随机生成！</p>
+                    <p class="text-red-500 font-semibold underline decoration-wavy">明确标注“本页面为娱乐恶搞，非官方平台。”</p>
+                </div>
+                <div class="mt-6 flex justify-end">
+                    <button onclick="confirmPrank()" 
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-lg transition-colors shadow-md">
+                        我知道了
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 伪造的政府版权底部 -->
+    <footer class="bg-slate-800 text-slate-400 text-center py-6 text-xs border-t border-slate-700 mt-8">
+        <div class="max-w-4xl mx-auto px-4 space-y-2">
+            <p>主办单位：枣庄市教育局 | 枣庄市招生考试委员会办公室</p>
+            <p>技术支持：枣庄市教育信息化中心 |</p>
+            <p class="text-slate-500 cursor-pointer hover:text-slate-300 transition-colors inline-block" onclick="alertFun()">
+                 鲁ICP备案号（单击显示）
             </p>
         </div>
     </footer>
 
-    <!-- 整活弹窗遮罩 -->
-    <div id="prank-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl border-2 border-red-500 max-w-md w-full p-6 relative overflow-hidden animate-bounce-subtle">
-            <!-- 警示标志 -->
-            <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center text-red-600 mx-auto mb-4">
-                <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
-            </div>
-            
-            <h3 class="text-xl font-bold text-center text-red-600 mb-2">🎉 整活警报（纯属恶搞） 🎉</h3>
-            <p class="text-sm text-gray-700 leading-relaxed mb-6 text-center">
-                本页面<strong class="text-red-600">仅作趣味整活</strong>，无任何对接真实教育局接口、无读取真实考生信息功能，所有分数均为纯前端随机算法生成！<br><br>
-                页面明确标注为<strong class="text-blue-600">娱乐恶搞，非官方平台</strong>，请勿当真，切勿用于商业或欺诈用途。祝大家中考顺利，金榜题名！
-            </p>
-
-            <button 
-                onclick="closePrankModal()" 
-                class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-xl transition shadow-lg shadow-red-200 text-sm"
-            >
-                我已明白 (关闭此整活提示)
-            </button>
-        </div>
-    </div>
-
-    <!-- 弹窗音乐音效 (可选娱乐交互，政务端通常无背景音) -->
-    <audio id="success-sound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-84.wav" preload="auto"></audio>
-
+    <!-- 脚本逻辑 -->
     <script>
-        // 初始化当前时间显示
-        function updateLiveTime() {
-            const timeEl = document.getElementById('live-time');
-            if(timeEl) {
-                const now = new Date();
-                timeEl.innerText = now.toLocaleString('zh-CN', { hour12: false });
-            }
-        }
-        setInterval(updateLiveTime, 1000);
-        updateLiveTime();
+        // 全局计时器句柄
+        let redirectTimeout = null;
 
-        // 成绩与等级评估规则
-        // 枣庄中考分值配比: 
-        // 语文 120, 数学 120, 英语 120, 物理 70, 化学 50, 道德与法治 45, 历史 45, 地理生物(合卷) 60, 体育 50 (满分合计 680)
-        
-        function getSubjectGrade(score, maxScore) {
-            const ratio = score / maxScore;
-            if (ratio >= 0.9) return 'A';
-            if (ratio >= 0.8) return 'B+';
-            if (ratio >= 0.7) return 'B';
-            if (ratio >= 0.6) return 'C';
-            return 'D';
+        // 备案号被点击的趣味弹窗
+        function alertFun() {
+            alert("💡 纯属娱乐搞怪！此页面所有数据皆在前端本地随机生成，绝不收集或泄露您的任何个人信息，玩得开心！");
         }
 
-        // 随机成绩生成器
-        function generateRandomScores() {
-            // 主科 120
-            const yw = Math.floor(Math.random() * (118 - 85 + 1)) + 85; // 语文 85~118
-            const sx = Math.floor(Math.random() * (120 - 75 + 1)) + 75; // 数学 75~120
-            const yy = Math.floor(Math.random() * (120 - 80 + 1)) + 80; // 英语 80~120
-            
-            // 理化 70 / 50
-            const wl = Math.floor(Math.random() * (70 - 45 + 1)) + 45; // 物理 45~70
-            const hx = Math.floor(Math.random() * (50 - 30 + 1)) + 30; // 化学 30~50
-
-            // 政史 45 / 45
-            const df = Math.floor(Math.random() * (45 - 30 + 1)) + 30; // 道法 30~45
-            const ls = Math.floor(Math.random() * (45 - 28 + 1)) + 28; // 历史 28~45
-
-            // 地生 60
-            const ds = Math.floor(Math.random() * (60 - 40 + 1)) + 40; // 地理生物 40~60
-
-            // 体育 50 (通常大家拿极高分)
-            const ty = Math.floor(Math.random() * (50 - 43 + 1)) + 43; // 体育 43~50
-
-            const total = yw + sx + yy + wl + hx + df + ls + ds + ty;
-
-            return { yw, sx, yy, wl, hx, df, ls, ds, ty, total };
+        // 重置表单
+        function resetForm() {
+            document.getElementById("search-form").reset();
+            closeResult();
         }
 
-        // 智能匹配枣庄录取学校
-        function getTargetSchool(total) {
-            if (total >= 620) {
-                return "🌟 ：滕州一中 (东校区) 或 枣庄三中 (新城校区) 等一流公办高中第一志愿优先录取！";
-            } else if (total >= 580) {
-                return "🏫 ：滕州一中 (西校区)、枣庄八中 (南校区) 或 滕州二中公费生志愿！";
-            } else if (total >= 530) {
-                return "📚 ：枣庄一中、滕州三中、滕州五中、薛城八中等重点优质公立高中。";
-            } else {
-                return "💡 ：枣庄市级普通高中、综合高中试点班或省属高水平职教高考班。";
+        // 重复查询时关闭结果卡片
+        function closeResult() {
+            document.getElementById("result-card").classList.add("hidden");
+            document.getElementById("search-card").classList.remove("hidden");
+            if (redirectTimeout) {
+                clearTimeout(redirectTimeout);
             }
         }
 
-        let prankTimer = null;
+        // 处理查询逻辑
+        function handleSearch(event) {
+            event.preventDefault();
 
-        // 处理查询提交
-        function handleQuery(e) {
-            e.preventDefault();
+            const examNo = document.getElementById("exam-no").value.trim();
+            const studentName = document.getElementById("student-name").value.trim();
+            const idCard = document.getElementById("id-card").value.trim();
 
-            const name = document.getElementById('student-name').value.trim();
-            const id = document.getElementById('student-id').value.trim();
-            const idcard = document.getElementById('id-card').value.trim();
-
-            if (!name || id.length !== 11 || idcard.length !== 6) {
-                alert("请按照提示输入正确的考生信息及11位准考证号。");
+            // 规则校验
+            if (examNo.length !== 11 || isNaN(examNo)) {
+                alert("请输入正确的11位准考证号！");
+                return;
+            }
+            if (!studentName) {
+                alert("姓名不能为空！");
+                return;
+            }
+            if (idCard.length !== 6) {
+                alert("请输入正确的身份证号后六位！");
                 return;
             }
 
-            // 1. 隐藏表单，显示加载中
-            document.getElementById('query-card').classList.add('hidden');
-            document.getElementById('loading-card').classList.remove('hidden');
+            // 1. 隐藏输入框，展示加载动画
+            document.getElementById("search-card").classList.add("hidden");
+            document.getElementById("result-card").classList.add("hidden");
+            const loading = document.getElementById("loading");
+            loading.classList.remove("hidden");
 
-            // 2. 模拟2秒的网络通信延时
+            // 2. 模拟 2 秒的接口对接时延
             setTimeout(() => {
-                const scores = generateRandomScores();
+                loading.classList.add("hidden");
+                generateRandomScores(studentName, examNo, idCard);
+                document.getElementById("result-card").classList.remove("hidden");
 
-                // 渲染结果到结果卡片
-                document.getElementById('res-student-name').innerText = name;
-                document.getElementById('res-total-score').innerText = scores.total;
-                document.getElementById('res-info-name').innerText = name;
-                document.getElementById('res-info-id').innerText = id;
-                document.getElementById('res-info-idcard').innerText = `******${idcard}`;
-                document.getElementById('res-info-total').innerText = scores.total;
-
-                // 渲染各个科目具体数据
-                document.getElementById('score-yw').innerText = scores.yw;
-                document.getElementById('grade-yw').innerText = getSubjectGrade(scores.yw, 120);
-
-                document.getElementById('score-sx').innerText = scores.sx;
-                document.getElementById('grade-sx').innerText = getSubjectGrade(scores.sx, 120);
-
-                document.getElementById('score-yy').innerText = scores.yy;
-                document.getElementById('grade-yy').innerText = getSubjectGrade(scores.yy, 120);
-
-                document.getElementById('score-wl').innerText = scores.wl;
-                document.getElementById('grade-wl').innerText = getSubjectGrade(scores.wl, 70);
-
-                document.getElementById('score-hx').innerText = scores.hx;
-                document.getElementById('grade-hx').innerText = getSubjectGrade(scores.hx, 50);
-
-                document.getElementById('score-df').innerText = scores.df;
-                document.getElementById('grade-df').innerText = getSubjectGrade(scores.df, 45);
-
-                document.getElementById('score-ls').innerText = scores.ls;
-                document.getElementById('grade-ls').innerText = getSubjectGrade(scores.ls, 45);
-
-                document.getElementById('score-ds').innerText = scores.ds;
-                document.getElementById('grade-ds').innerText = getSubjectGrade(scores.ds, 60);
-
-                document.getElementById('score-ty').innerText = scores.ty;
-
-                // 匹配院校与时间戳
-                document.getElementById('res-school').innerText = getTargetSchool(scores.total);
-                document.getElementById('res-timestamp').innerText = new Date().toLocaleString('zh-CN');
-
-                // 播放趣味提示音
-                try {
-                    document.getElementById('success-sound').play();
-                } catch(e){}
-
-                // 3. 展现成绩面板
-                document.getElementById('loading-card').classList.add('hidden');
-                document.getElementById('result-card').classList.remove('hidden');
-
-                // 4. 定时 60 秒后弹出恶搞提示声明
-                if (prankTimer) clearTimeout(prankTimer);
-                prankTimer = setTimeout(() => {
-                    document.getElementById('prank-modal').classList.remove('hidden');
+                // 3. 核心：60秒后弹出整蛊提示弹窗
+                redirectTimeout = setTimeout(() => {
+                    showPrankModal();
                 }, 60000);
 
             }, 2000);
         }
 
-        // 返回重新查询
-        function backToQuery() {
-            document.getElementById('result-card').classList.add('hidden');
-            document.getElementById('query-card').classList.remove('hidden');
-            if (prankTimer) clearTimeout(prankTimer);
+        // 根据分数设定各个科目的等级 A, B+, B, C, D等
+        function getSubjectGrade(score, maxScore) {
+            const ratio = score / maxScore;
+            if (ratio >= 0.85) return "A";
+            if (ratio >= 0.78) return "B+";
+            if (ratio >= 0.70) return "B";
+            if (ratio >= 0.60) return "C";
+            return "D";
         }
 
-        // 清空表单
-        function resetForm() {
-            document.getElementById('query-form').reset();
+        // 核心随机生成成绩逻辑
+        function generateRandomScores(name, examNo, id) {
+            // 枣庄中考各科目总分上限 (满分 680)
+            // 语、数、英(各120), 物(70), 化(50), 地生(60), 政/道法(45), 历(45), 体育(50)
+            
+            // 为了让随机出的分数合情合理，我们按阶梯概率随机生成一个总分 (350 - 675分之间)
+            const randomVal = Math.random();
+            let totalTarget = 0;
+            if (randomVal > 0.85) {
+                // 15% 概率获得高分 (610 - 670)
+                totalTarget = Math.floor(Math.random() * (670 - 610 + 1)) + 610;
+            } else if (randomVal > 0.4) {
+                // 45% 概率获得中等偏上分数 (520 - 609)
+                totalTarget = Math.floor(Math.random() * (609 - 520 + 1)) + 520;
+            } else if (randomVal > 0.1) {
+                // 30% 概率中等偏下分数 (400 - 519)
+                totalTarget = Math.floor(Math.random() * (519 - 400 + 1)) + 400;
+            } else {
+                // 10% 概率低分 (280 - 399)
+                totalTarget = Math.floor(Math.random() * (399 - 280 + 1)) + 280;
+            }
+
+            // 分配算法比例
+            const ratio = totalTarget / 680;
+
+            // 根据目标总分比例，加上正态微调噪声，得出单科分数
+            const generatePartScore = (maxScore) => {
+                const noise = (Math.random() * 0.2) - 0.1; // -10% 到 +10% 抖动
+                let s = Math.round(maxScore * (ratio + noise));
+                if (s > maxScore) s = maxScore;
+                if (s < Math.round(maxScore * 0.3)) s = Math.round(maxScore * (0.3 + Math.random() * 0.15)); // 防止分数过低不合理
+                return s;
+            };
+
+            const yw = generatePartScore(120);
+            const sx = generatePartScore(120);
+            const yy = generatePartScore(120);
+            const wl = generatePartScore(70);
+            const hx = generatePartScore(50);
+            const df = generatePartScore(45);
+            const ls = generatePartScore(45);
+            const dlsw = generatePartScore(60);
+            
+            // 体育分一般都不低 (40-50之间)
+            const ty = Math.floor(Math.random() * (50 - 42 + 1)) + 42;
+
+            // 重新累计得到精确总分
+            const realTotal = yw + sx + yy + wl + hx + df + ls + dlsw + ty;
+
+            // 填充姓名、信息
+            document.getElementById("res-student-name").innerText = name;
+            document.getElementById("res-name").innerText = name;
+            document.getElementById("res-exam-no").innerText = examNo;
+            document.getElementById("res-id").innerText = id;
+            document.getElementById("res-total-score-big").innerText = realTotal;
+            document.getElementById("res-total-score-small").innerText = realTotal + " 分";
+
+            // 填充单科分数
+            document.getElementById("score-yw").innerText = yw;
+            document.getElementById("score-sx").innerText = sx;
+            document.getElementById("score-yy").innerText = yy;
+            document.getElementById("score-wl").innerText = wl;
+            document.getElementById("score-hx").innerText = hx;
+            document.getElementById("score-df").innerText = df;
+            document.getElementById("score-ls").innerText = ls;
+            document.getElementById("score-dlsw").innerText = dlsw;
+            document.getElementById("score-ty").innerText = ty;
+
+            // 填充对应等级
+            document.getElementById("grade-yw").innerText = getSubjectGrade(yw, 120);
+            document.getElementById("grade-sx").innerText = getSubjectGrade(sx, 120);
+            document.getElementById("grade-yy").innerText = getSubjectGrade(yy, 120);
+            document.getElementById("grade-wl").innerText = getSubjectGrade(wl, 70);
+            document.getElementById("grade-hx").innerText = getSubjectGrade(hx, 50);
+            document.getElementById("grade-df").innerText = getSubjectGrade(df, 45);
+            document.getElementById("grade-ls").innerText = getSubjectGrade(ls, 45);
+            document.getElementById("grade-dlsw").innerText = getSubjectGrade(dlsw, 60);
+
+            // 匹配预录取院校 (根据总分段匹配枣庄知名重点/普通/民办高中及滑档逻辑)
+            let school = "";
+            if (realTotal >= 630) {
+                const schools = ["滕州一中（东校）", "滕州一中（西校）", "枣庄三中", "枣庄一中", "薛城八中（尖子班）"];
+                school = schools[Math.floor(Math.random() * schools.length)];
+            } else if (realTotal >= 560) {
+                const schools = ["滕州二中", "滕州三中", "薛城八中", "枣庄二中", "峄城一中", "山亭一中"];
+                school = schools[Math.floor(Math.random() * schools.length)];
+            } else if (realTotal >= 480) {
+                const schools = ["滕州五中", "滕州大坞中学", "枣庄五中", "枣庄市实验高中", "台儿庄一中"];
+                school = schools[Math.floor(Math.random() * schools.length)];
+            } else if (realTotal >= 420) {
+                const schools = ["枣庄翔宇中学", "滕州华泰中学", "墨子中学", "枣庄市外国语学校"];
+                school = schools[Math.floor(Math.random() * schools.length)] + " (民办/择校)";
+            } else if (realTotal >= 340) {
+                const schools = ["枣庄市科技职业中专", "枣庄高级技工学校", "滕州中等职业专业学校", "枣庄市交通中等专业学校"];
+                school = schools[Math.floor(Math.random() * schools.length)] + " (职教高考班/中职)";
+            } else {
+                school = "未达到普通高中最低控制线 (滑档/建议咨询职专技术学校)";
+            }
+            document.getElementById("admission-school").innerText = school;
         }
 
-        // 关闭整活弹窗
-        function closePrankModal() {
-            document.getElementById('prank-modal').classList.add('hidden');
+        // 显示免责弹窗
+        function showPrankModal() {
+            const modal = document.getElementById("prank-modal");
+            modal.classList.remove("hidden");
+            // 加上稍微缩放动画
+            setTimeout(() => {
+                modal.querySelector('div').classList.remove('scale-95');
+                modal.querySelector('div').classList.add('scale-100');
+            }, 50);
+        }
+
+        // 确认整蛊并跳转
+        function confirmPrank() {
+            window.location.href = "https://b23.tv/nf0p0SS";
         }
     </script>
 </body>
 </html>
+
+```
